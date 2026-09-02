@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NFL Faceoff</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: #0f172a;
+      color: #f8fafc;
+      font-family: system-ui, -apple-system, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+    #header {
+      position: absolute;
+      top: 24px;
+      display: flex;
+      justify-content: space-between;
+      width: 90%;
+      max-width: 900px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #94a3b8;
+    }
+    #card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+    #img-container {
+      width: 420px;
+      height: 420px;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 4px solid #334155;
+      background-color: #1e293b;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #player-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    #answer-box {
+      min-height: 90px;
+      text-align: center;
+    }
+    #player-name {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #38bdf8;
+      visibility: hidden;
+    }
+    #player-meta {
+      font-size: 1.2rem;
+      color: #94a3b8;
+      visibility: hidden;
+      margin-top: 4px;
+    }
+    .visible {
+      visibility: visible !important;
+    }
+    #controls {
+      position: absolute;
+      bottom: 24px;
+      display: flex;
+      gap: 16px;
+    }
+    button {
+      padding: 12px 24px;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background-color: #38bdf8;
+      color: #0f172a;
+      transition: background 0.15s ease;
+    }
+    button:hover { background-color: #7dd3fc; }
+    button.secondary { background-color: #334155; color: #f8fafc; }
+    button.secondary:hover { background-color: #475569; }
+    #instructions {
+      position: absolute;
+      bottom: 75px;
+      color: #64748b;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="header">
+    <span id="pos-badge">POS: QB</span>
+    <span id="counter">1 / 10</span>
+  </div>
+
+  <div id="card">
+    <div id="img-container">
+      <img id="player-img" src="" alt="NFL Player">
+    </div>
+    <div id="answer-box">
+      <div id="player-name">Player Name</div>
+      <div id="player-meta">Team | Position</div>
+    </div>
+  </div>
+
+  <div id="instructions">Hotkeys: [Space] Reveal | [Right Arrow] Next | [Left Arrow] Back</div>
+
+  <div id="controls">
+    <button class="secondary" onclick="prevCard()">Previous</button>
+    <button onclick="toggleAnswer()">Reveal / Hide</button>
+    <button class="secondary" onclick="nextCard()">Next</button>
+  </div>
+
+  <script>
+    // EDIT THIS ROSTER WITH YOUR PLAYERS AND IMAGE URLS
+    const players = [
+      {
+        name: "C.J. Stroud",
+        pos: "QB",
+        team: "Houston Texans",
+        img: "https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/4432577.png&w=600"
+      },
+      {
+        name: "Jahmyr Gibbs",
+        pos: "RB",
+        team: "Detroit Lions",
+        img: "https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/4430755.png&w=600"
+      },
+      {
+        name: "Puka Nacua",
+        pos: "WR",
+        team: "Los Angeles Rams",
+        img: "https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/4426515.png&w=600"
+      },
+      {
+        name: "Sam LaPorta",
+        pos: "TE",
+        team: "Detroit Lions",
+        img: "https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/4428705.png&w=600"
+      },
+      {
+        name: "Jordan Love",
+        pos: "QB",
+        team: "Green Bay Packers",
+        img: "https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/4036378.png&w=600"
+      }
+    ];
+
+    let currentIndex = 0;
+    let answerRevealed = false;
+
+    const imgEl = document.getElementById("player-img");
+    const nameEl = document.getElementById("player-name");
+    const metaEl = document.getElementById("player-meta");
+    const posBadgeEl = document.getElementById("pos-badge");
+    const counterEl = document.getElementById("counter");
+
+    function render() {
+      const p = players[currentIndex];
+      imgEl.src = p.img;
+      nameEl.textContent = p.name;
+      metaEl.textContent = `${p.team} • ${p.pos}`;
+      posBadgeEl.textContent = `POS: ${p.pos}`;
+      counterEl.textContent = `${currentIndex + 1} / ${players.length}`;
+      
+      answerRevealed = false;
+      nameEl.classList.remove("visible");
+      metaEl.classList.remove("visible");
+    }
+
+    function toggleAnswer() {
+      answerRevealed = !answerRevealed;
+      nameEl.classList.toggle("visible", answerRevealed);
+      metaEl.classList.toggle("visible", answerRevealed);
+    }
+
+    function nextCard() {
+      if (currentIndex < players.length - 1) {
+        currentIndex++;
+        render();
+      }
+    }
+
+    function prevCard() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        render();
+      }
+    }
+
+    window.addEventListener("keydown", (e) => {
+      if (e.code === "Space") {
+        e.preventDefault();
+        toggleAnswer();
+      } else if (e.code === "ArrowRight") {
+        nextCard();
+      } else if (e.code === "ArrowLeft") {
+        prevCard();
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>
