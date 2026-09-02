@@ -3,85 +3,174 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NFL Faceoff</title>
+  <title>NFL Bachelor Party Faceoff</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background-color: #0f172a;
+      background-color: #0b1329;
       color: #f8fafc;
-      font-family: system-ui, -apple-system, sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: space-between;
       min-height: 100vh;
-      overflow: hidden;
+      padding: 20px;
+      overflow-x: hidden;
     }
-    #header {
-      position: absolute;
-      top: 24px;
+
+    #top-nav {
+      width: 100%;
+      max-width: 960px;
       display: flex;
       justify-content: space-between;
-      width: 90%;
-      max-width: 900px;
-      font-size: 1.25rem;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      color: #94a3b8;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
     }
+
+    .pos-tabs {
+      display: flex;
+      gap: 8px;
+    }
+
+    .pos-tab {
+      background-color: #1e293b;
+      color: #94a3b8;
+      border: 2px solid #334155;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .pos-tab:hover {
+      background-color: #334155;
+      color: #ffffff;
+    }
+
+    .pos-tab.active {
+      background-color: #38bdf8;
+      color: #0f172a;
+      border-color: #38bdf8;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .action-btn {
+      background-color: #1e293b;
+      color: #cbd5e1;
+      border: 1px solid #475569;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .action-btn:hover {
+      background-color: #334155;
+      color: #fff;
+    }
+
     #card {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 20px;
+      margin: auto 0;
+      gap: 18px;
     }
+
+    #counter-label {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
     #img-container {
-      width: 420px;
-      height: 420px;
-      border-radius: 16px;
+      width: 440px;
+      height: 440px;
+      border-radius: 18px;
       overflow: hidden;
       border: 4px solid #334155;
       background-color: #1e293b;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 25px 40px -10px rgba(0, 0, 0, 0.6);
       display: flex;
       align-items: center;
       justify-content: center;
+      position: relative;
     }
+
     #player-img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      display: block;
     }
-    #answer-box {
-      min-height: 90px;
+
+    #placeholder-box {
+      display: none;
       text-align: center;
+      padding: 20px;
+      color: #cbd5e1;
+      font-size: 1.1rem;
     }
+
+    #answer-box {
+      min-height: 80px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
     #player-name {
-      font-size: 2.5rem;
+      font-size: 2.8rem;
       font-weight: 800;
       color: #38bdf8;
       visibility: hidden;
+      letter-spacing: 0.02em;
     }
-    #player-meta {
-      font-size: 1.2rem;
+
+    #player-pos-tag {
+      font-size: 1.3rem;
       color: #94a3b8;
+      font-weight: 600;
       visibility: hidden;
       margin-top: 4px;
     }
-    .visible {
+
+    .revealed {
       visibility: visible !important;
     }
-    #controls {
-      position: absolute;
-      bottom: 24px;
+
+    #bottom-bar {
+      width: 100%;
+      max-width: 960px;
       display: flex;
-      gap: 16px;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
     }
-    button {
-      padding: 12px 24px;
-      font-size: 1rem;
-      font-weight: 600;
+
+    #nav-controls {
+      display: flex;
+      gap: 14px;
+    }
+
+    .main-btn {
+      padding: 12px 28px;
+      font-size: 1.1rem;
+      font-weight: 700;
       border: none;
       border-radius: 8px;
       cursor: pointer;
@@ -89,131 +178,358 @@
       color: #0f172a;
       transition: background 0.15s ease;
     }
-    button:hover { background-color: #7dd3fc; }
-    button.secondary { background-color: #334155; color: #f8fafc; }
-    button.secondary:hover { background-color: #475569; }
-    #instructions {
-      position: absolute;
-      bottom: 75px;
+
+    .main-btn:hover { background-color: #7dd3fc; }
+
+    .sec-btn {
+      background-color: #1e293b;
+      color: #f8fafc;
+      border: 1px solid #334155;
+    }
+
+    .sec-btn:hover { background-color: #334155; }
+
+    #shortcut-hint {
       color: #64748b;
       font-size: 0.85rem;
+    }
+
+    /* Modal for CSV paste / upload */
+    #modal-backdrop {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.75);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #modal-dialog {
+      background-color: #1e293b;
+      border: 1px solid #475569;
+      border-radius: 14px;
+      padding: 24px;
+      width: 90%;
+      max-width: 620px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.6);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    #modal-dialog h2 {
+      font-size: 1.4rem;
+      color: #f8fafc;
+    }
+
+    #modal-dialog p {
+      font-size: 0.9rem;
+      color: #94a3b8;
+      line-height: 1.4;
+    }
+
+    #csv-textarea {
+      width: 100%;
+      height: 180px;
+      background-color: #0f172a;
+      color: #e2e8f0;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 12px;
+      font-family: monospace;
+      font-size: 0.85rem;
+      resize: vertical;
+    }
+
+    .modal-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
     }
   </style>
 </head>
 <body>
 
-  <div id="header">
-    <span id="pos-badge">POS: QB</span>
-    <span id="counter">1 / 10</span>
+  <div id="top-nav">
+    <div class="pos-tabs">
+      <button class="pos-tab active" onclick="setSection('ALL')">ALL</button>
+      <button class="pos-tab" onclick="setSection('QB')">QB</button>
+      <button class="pos-tab" onclick="setSection('RB')">RB</button>
+      <button class="pos-tab" onclick="setSection('WR')">WR</button>
+      <button class="pos-tab" onclick="setSection('TE')">TE</button>
+    </div>
+
+    <div class="top-actions">
+      <button class="action-btn" onclick="shuffleCurrentSection()">Shuffle</button>
+      <button class="action-btn" onclick="openModal()">Import CSV</button>
+    </div>
   </div>
 
   <div id="card">
+    <div id="counter-label">PLAYER 1 OF 1</div>
+
     <div id="img-container">
-      <img id="player-img" src="" alt="NFL Player">
+      <img id="player-img" src="" alt="Player Photo">
+      <div id="placeholder-box">No photo available</div>
     </div>
+
     <div id="answer-box">
-      <div id="player-name">Player Name</div>
-      <div id="player-meta">Team | Position</div>
+      <div id="player-name">First Last</div>
+      <div id="player-pos-tag">Position: QB</div>
     </div>
   </div>
 
-  <div id="instructions">Hotkeys: [Space] Reveal | [Right Arrow] Next | [Left Arrow] Back</div>
+  <div id="bottom-bar">
+    <div id="nav-controls">
+      <button class="main-btn sec-btn" onclick="prevPlayer()">Previous</button>
+      <button class="main-btn" onclick="toggleAnswer()">Reveal / Hide</button>
+      <button class="main-btn sec-btn" onclick="nextPlayer()">Next</button>
+    </div>
+    <div id="shortcut-hint">
+      Shortcuts: [Space] Reveal | [Right Arrow] Next | [Left Arrow] Previous | [1 - 5] Filter Sections
+    </div>
+  </div>
 
-  <div id="controls">
-    <button class="secondary" onclick="prevCard()">Previous</button>
-    <button onclick="toggleAnswer()">Reveal / Hide</button>
-    <button class="secondary" onclick="nextCard()">Next</button>
+  <!-- CSV Import Modal -->
+  <div id="modal-backdrop">
+    <div id="modal-dialog">
+      <h2>Load Player Roster (CSV)</h2>
+      <p>
+        Paste your CSV data below (format: <code>playerid,first,last,pos</code>) or select a <code>.csv</code> file.
+        For retired players without an ESPN ID, put an image URL or local path in the <code>playerid</code> column.
+      </p>
+
+      <input type="file" id="file-input" accept=".csv" onchange="handleFileUpload(event)">
+
+      <textarea id="csv-textarea" spellcheck="false"></textarea>
+
+      <div class="modal-buttons">
+        <button class="action-btn" onclick="closeModal()">Cancel</button>
+        <button class="main-btn" style="padding: 8px 18px; font-size: 0.95rem;" onclick="loadCsvFromTextarea()">Apply Roster</button>
+      </div>
+    </div>
   </div>
 
   <script>
-    // EDIT THIS ROSTER WITH YOUR PLAYERS AND IMAGE URLS
-    const players = [
-      {
-        name: "C.J. Stroud",
-        pos: "QB",
-        team: "Houston Texans",
-        img: "https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/4432577.png&w=600"
-      },
-      {
-        name: "Jahmyr Gibbs",
-        pos: "RB",
-        team: "Detroit Lions",
-        img: "https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/4430755.png&w=600"
-      },
-      {
-        name: "Puka Nacua",
-        pos: "WR",
-        team: "Los Angeles Rams",
-        img: "https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/4426515.png&w=600"
-      },
-      {
-        name: "Sam LaPorta",
-        pos: "TE",
-        team: "Detroit Lions",
-        img: "https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/4428705.png&w=600"
-      },
-      {
-        name: "Jordan Love",
-        pos: "QB",
-        team: "Green Bay Packers",
-        img: "https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/4036378.png&w=600"
-      }
-    ];
+    const initialCsvData = `playerid,first,last,pos
+4432577,C.J.,Stroud,QB
+2330,Tom,Brady,QB
+https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/Dan_Marino_2014.jpg/480px-Dan_Marino_2014.jpg,Dan,Marino,QB
+4036378,Jordan,Love,QB
+4430755,Jahmyr,Gibbs,RB
+https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Barry_Sanders_2015.jpg/480px-Barry_Sanders_2015.jpg,Barry,Sanders,RB
+4426515,Puka,Nacua,WR
+1433,Randy,Moss,WR
+4428705,Sam,LaPorta,TE
+https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Tony_Gonzalez_2014.jpg/480px-Tony_Gonzalez_2014.jpg,Tony,Gonzalez,TE`;
 
+    let allPlayers = [];
+    let filteredPlayers = [];
+    let currentSection = "ALL";
     let currentIndex = 0;
-    let answerRevealed = false;
+    let isRevealed = false;
 
     const imgEl = document.getElementById("player-img");
+    const placeholderEl = document.getElementById("placeholder-box");
     const nameEl = document.getElementById("player-name");
-    const metaEl = document.getElementById("player-meta");
-    const posBadgeEl = document.getElementById("pos-badge");
-    const counterEl = document.getElementById("counter");
+    const posTagEl = document.getElementById("player-pos-tag");
+    const counterLabel = document.getElementById("counter-label");
+    const modalBackdrop = document.getElementById("modal-backdrop");
+    const csvTextarea = document.getElementById("csv-textarea");
 
-    function render() {
-      const p = players[currentIndex];
-      imgEl.src = p.img;
-      nameEl.textContent = p.name;
-      metaEl.textContent = `${p.team} • ${p.pos}`;
-      posBadgeEl.textContent = `POS: ${p.pos}`;
-      counterEl.textContent = `${currentIndex + 1} / ${players.length}`;
-      
-      answerRevealed = false;
-      nameEl.classList.remove("visible");
-      metaEl.classList.remove("visible");
+    function resolvePhotoUrl(idOrUrl) {
+      if (!idOrUrl) return "";
+      const val = idOrUrl.trim();
+      const isHttp = val.startsWith("http://") || val.startsWith("https://");
+      const isPath = val.startsWith("/") || val.startsWith("images/");
+      if (isHttp || isPath) {
+        return val;
+      }
+      if (!isNaN(val)) {
+        return "https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/" + val + ".png&w=600";
+      }
+      return val;
+    }
+
+    function parseCsvText(rawText) {
+      const rows = rawText.trim().split(/\r?\n/);
+      const parsed = [];
+
+      for (let i = 0; i < rows.length; i = i + 1) {
+        const line = rows[i].trim();
+        if (!line) continue;
+
+        const cols = line.split(",").map(c => c.trim().replace(/^["']|["']$/g, ""));
+        if (i === 0 && (cols[0].toLowerCase().includes("id") || cols[1].toLowerCase().includes("first"))) {
+          continue;
+        }
+
+        if (cols.length >= 4) {
+          parsed.push({
+            idOrUrl: cols[0],
+            first: cols[1],
+            last: cols[2],
+            pos: cols[3].toUpperCase()
+          });
+        }
+      }
+      return parsed;
+    }
+
+    function updateSectionTabs() {
+      const tabs = document.querySelectorAll(".pos-tab");
+      tabs.forEach(tab => {
+        if (tab.textContent.trim() === currentSection) {
+          tab.classList.add("active");
+        } else {
+          tab.classList.remove("active");
+        }
+      });
+    }
+
+    function setSection(section) {
+      currentSection = section;
+      updateSectionTabs();
+
+      if (section === "ALL") {
+        filteredPlayers = allPlayers.slice();
+      } else {
+        filteredPlayers = allPlayers.filter(p => p.pos === section);
+      }
+
+      currentIndex = 0;
+      renderCurrent();
+    }
+
+    function shuffleCurrentSection() {
+      for (let i = filteredPlayers.length - 1; i > 0; i = i - 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const temp = filteredPlayers[i];
+        filteredPlayers[i] = filteredPlayers[j];
+        filteredPlayers[j] = temp;
+      }
+      currentIndex = 0;
+      renderCurrent();
+    }
+
+    function renderCurrent() {
+      isRevealed = false;
+      nameEl.classList.remove("revealed");
+      posTagEl.classList.remove("revealed");
+
+      if (filteredPlayers.length === 0) {
+        imgEl.style.display = "none";
+        placeholderEl.style.display = "block";
+        placeholderEl.textContent = "No players in section " + currentSection;
+        nameEl.textContent = "";
+        posTagEl.textContent = "";
+        counterLabel.textContent = "0 OF 0";
+        return;
+      }
+
+      const p = filteredPlayers[currentIndex];
+      const photoSrc = resolvePhotoUrl(p.idOrUrl);
+
+      imgEl.style.display = "block";
+      placeholderEl.style.display = "none";
+      imgEl.src = photoSrc;
+
+      imgEl.onerror = function() {
+        imgEl.style.display = "none";
+        placeholderEl.style.display = "block";
+        placeholderEl.textContent = "Photo not found for " + p.first + " " + p.last;
+      };
+
+      nameEl.textContent = p.first + " " + p.last;
+      posTagEl.textContent = "Position: " + p.pos;
+      counterLabel.textContent = "PLAYER " + (currentIndex + 1) + " OF " + filteredPlayers.length + " (" + currentSection + ")";
     }
 
     function toggleAnswer() {
-      answerRevealed = !answerRevealed;
-      nameEl.classList.toggle("visible", answerRevealed);
-      metaEl.classList.toggle("visible", answerRevealed);
+      if (filteredPlayers.length === 0) return;
+      isRevealed = !isRevealed;
+      nameEl.classList.toggle("revealed", isRevealed);
+      posTagEl.classList.toggle("revealed", isRevealed);
     }
 
-    function nextCard() {
-      if (currentIndex < players.length - 1) {
-        currentIndex++;
-        render();
+    function nextPlayer() {
+      if (currentIndex < filteredPlayers.length - 1) {
+        currentIndex = currentIndex + 1;
+        renderCurrent();
       }
     }
 
-    function prevCard() {
+    function prevPlayer() {
       if (currentIndex > 0) {
-        currentIndex--;
-        render();
+        currentIndex = currentIndex - 1;
+        renderCurrent();
       }
     }
 
-    window.addEventListener("keydown", (e) => {
+    function openModal() {
+      modalBackdrop.style.display = "flex";
+    }
+
+    function closeModal() {
+      modalBackdrop.style.display = "none";
+    }
+
+    function loadCsvFromTextarea() {
+      const text = csvTextarea.value;
+      const data = parseCsvText(text);
+      if (data.length > 0) {
+        allPlayers = data;
+        setSection(currentSection);
+        closeModal();
+      } else {
+        alert("Could not parse any players. Please check your CSV format.");
+      }
+    }
+
+    function handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        csvTextarea.value = e.target.result;
+      };
+      reader.readAsText(file);
+    }
+
+    window.addEventListener("keydown", function(e) {
+      if (modalBackdrop.style.display === "flex") {
+        if (e.key === "Escape") closeModal();
+        return;
+      }
+
       if (e.code === "Space") {
         e.preventDefault();
         toggleAnswer();
       } else if (e.code === "ArrowRight") {
-        nextCard();
+        nextPlayer();
       } else if (e.code === "ArrowLeft") {
-        prevCard();
+        prevPlayer();
+      } else if (e.key === "1") {
+        setSection("ALL");
+      } else if (e.key === "2") {
+        setSection("QB");
+      } else if (e.key === "3") {
+        setSection("RB");
+      } else if (e.key === "4") {
+        setSection("WR");
+      } else if (e.key === "5") {
+        setSection("TE");
       }
     });
 
-    render();
+    // Initialize with sample roster
+    csvTextarea.value = initialCsvData;
+    allPlayers = parseCsvText(initialCsvData);
+    setSection("ALL");
   </script>
 </body>
 </html>
